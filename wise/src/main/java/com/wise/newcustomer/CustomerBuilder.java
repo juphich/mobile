@@ -1,14 +1,19 @@
 package com.wise.newcustomer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.wise.category.Category;
 import com.wise.core.RepositoryContextHolder;
 import com.wise.core.SequenceGenerator;
 import com.wise.customer.contact.Contact;
 import com.wise.customer.contact.Phone;
 import com.wise.note.Note;
 import com.wise.note.NoteRepository;
+import com.wise.volume.Volume;
+import com.wise.volume.VolumeRepository;
 
 public class CustomerBuilder {
 
@@ -17,7 +22,9 @@ public class CustomerBuilder {
 	private Gender gender;
 	private Customer recommend;
 	
+	private Set<Category> categories = new HashSet<>();
 	private List<Contact> contacts = new ArrayList<Contact>(10);
+	
 	private String customerId;
 	
 	public static CustomerBuilder as() {
@@ -54,6 +61,11 @@ public class CustomerBuilder {
 		return this;
 	}
 	
+	public CustomerBuilder category(Category category) {
+		this.categories.add(category);
+		return this;
+	}
+	
 	public Customer build() {
 		if (customerId == null) {
 			this.customerId = SequenceGenerator.next();
@@ -61,13 +73,15 @@ public class CustomerBuilder {
 		
 		Customer customer = new Customer(customerId, name, gender);
 		customer.setNoteRepository((NoteRepository) RepositoryContextHolder.repository(Note.class));
+		customer.setVolumeRepository((VolumeRepository) RepositoryContextHolder.repository(Volume.class));
 		
 		customer.setSerial(serial);
-//		customer.setRecommend(recommend);
+//		customer.recommend(recommend);
 		
-//		for (Contact contact : contacts) {
-//			customer.addContact(contact);
-//		}
+		for (Category category : categories) {
+			customer.addCategory(category);
+		}
+		
 		return customer;
 	}
 }

@@ -9,6 +9,7 @@
   <description>wise project</description>
   <modules>
   	<module>wise</module>
+  	<module>wise-persistence</module>
   </modules>
   
 </project>

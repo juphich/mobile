@@ -2,8 +2,10 @@ package com.wise.newcustomer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.wise.category.Category;
 import com.wise.core.GenericQuery;
@@ -13,6 +15,8 @@ import com.wise.newcustomer.privacy.PrivacyType;
 import com.wise.note.Note;
 import com.wise.note.NoteBuilder;
 import com.wise.note.NoteRepository;
+import com.wise.volume.Volume;
+import com.wise.volume.VolumeRepository;
 
 public class Customer {
 
@@ -24,13 +28,15 @@ public class Customer {
 	
 	private Gender gender;
 	
-	private List<Customer> recommends;
+	private Customer recommend;
 	
-	private List<Category> categories;
+	private Set<Category> categories;
 	
-	private Map<PrivacyType, List<? extends Privacy>> infomations;
+	private Map<PrivacyType, List<? extends Privacy>> privacies;
 	
 	private NoteRepository noteRepository;
+	
+	private VolumeRepository volumeRepository;
 
 	public Customer(String customerId, String name, Gender gender) {
 		this.customerId = customerId;
@@ -40,6 +46,10 @@ public class Customer {
 	
 	public void setNoteRepository(NoteRepository noteRepository) {
 		this.noteRepository = noteRepository;
+	}
+	
+	public void setVolumeRepository(VolumeRepository volumeRepository) {
+		this.volumeRepository = volumeRepository;
 	}
 
 	public String getCustomerId() {
@@ -58,38 +68,51 @@ public class Customer {
 		return gender;
 	}
 
-	public List<Customer> getRecommends() {
-		return recommends;
-	}
-
-	public List<Category> getCategories() {
+	public Set<Category> getCategories() {
 		return categories;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <D extends Privacy> List<D> findPrivacy(PrivacyType type) {
-		return (List<D>) infomations.get(type);
+		return (List<D>) privacies.get(type);
 	}
 	
+	public List<Note> getMemo() {
+		Query query = new GenericQuery();
+		query.q("referer", this);
+		return noteRepository.search(query);
+	}
+	
+	public Customer getRecommend() {
+		return recommend;
+	}
+
 	public void setSerial(String serial) {
 		this.serial = serial;
+	}
+	
+	public void addCategory(Category category) {
+		if (categories == null) {
+			categories = new HashSet<>();
+		}
+		categories.add(category);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <D extends Privacy> void addPrivacy(D info) {
 		PrivacyType type = info.type();
 		
-		if (infomations == null) {
-			infomations = new HashMap<>();
+		if (privacies == null) {
+			privacies = new HashMap<>();
 		}
 		
-		List<? extends Privacy> supplements = infomations.get(type);
+		List<? extends Privacy> supplements = privacies.get(type);
 		if (supplements == null) {
 			supplements = new ArrayList<>();
 		}
 		
 		appendSupplement((List<? super Privacy>) supplements, info);
-		infomations.put(type, supplements);
+		privacies.put(type, supplements);
 	}
 	
 	private void appendSupplement(List<? super Privacy> list, Privacy detail) {
@@ -105,9 +128,14 @@ public class Customer {
 		noteRepository.save(note);
 	}
 	
-	public List<Note> getMemo() {
-		Query query = new GenericQuery();
-		query.q("referer", this);
-		return noteRepository.search(query);
+	public void recommend(Customer customer) {
+		Volume volume = volumeRepository.find(customer.getCustomerId());
+		if (volume == null) {
+			volume = new Volume(customer);
+		}
+		volume.addMamber(this);
+		volumeRepository.save(volume);
+		
+		this.recommend = customer;
 	}
 }

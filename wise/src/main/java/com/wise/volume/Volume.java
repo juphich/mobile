@@ -3,7 +3,7 @@ package com.wise.volume;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.wise.newcustomer.Customer;
+import com.wise.customer.Customer;
 
 public class Volume {
 

@@ -9,8 +9,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.wise.newcustomer.Customer;
-import com.wise.newcustomer.CustomerBuilder;
+import com.wise.customer.Customer;
+import com.wise.customer.CustomerBuilder;
 
 public class VolumeDomainTest {
 

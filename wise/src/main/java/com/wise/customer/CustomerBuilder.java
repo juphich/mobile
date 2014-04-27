@@ -1,22 +1,30 @@
 package com.wise.customer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.wise.category.Category;
+import com.wise.core.RepositoryContextHolder;
 import com.wise.core.SequenceGenerator;
-import com.wise.customer.contact.Contact;
-import com.wise.customer.contact.Phone;
+import com.wise.customer.code.Phone;
+import com.wise.customer.privacy.Contact;
+import com.wise.note.Note;
+import com.wise.note.NoteRepository;
+import com.wise.volume.Volume;
+import com.wise.volume.VolumeRepository;
 
 public class CustomerBuilder {
 
 	private String serial;
 	private String name;
-	private String nick;
-	private String birthday;
 	private Gender gender;
 	private Customer recommend;
 	
+	private Set<Category> categories = new HashSet<>();
 	private List<Contact> contacts = new ArrayList<Contact>(10);
+	
 	private String customerId;
 	
 	public static CustomerBuilder as() {
@@ -38,16 +46,6 @@ public class CustomerBuilder {
 		return this;
 	}
 
-	public CustomerBuilder nick(String nick) {
-		this.nick = nick;
-		return this;
-	}
-
-	public CustomerBuilder birthday(String birthday) {
-		this.birthday = birthday;
-		return this;
-	}
-
 	public CustomerBuilder gender(Gender gender) {
 		this.gender = gender;
 		return this;
@@ -59,25 +57,31 @@ public class CustomerBuilder {
 	}
 	
 	public CustomerBuilder phone(String phone) {
-		this.contacts.add(new Phone("mobile", phone));
+		this.contacts.add(new Contact(Phone.mobile, phone));
+		return this;
+	}
+	
+	public CustomerBuilder category(Category category) {
+		this.categories.add(category);
 		return this;
 	}
 	
 	public Customer build() {
-		Customer customer = new Customer(name, nick, gender, birthday);
-		
 		if (customerId == null) {
-			customer.setCustomerId(SequenceGenerator.next());
-		} else {
-			customer.setCustomerId(customerId);
+			this.customerId = SequenceGenerator.next();
 		}
+		
+		Customer customer = new Customer(customerId, name, gender);
+		customer.setNoteRepository((NoteRepository) RepositoryContextHolder.repository(Note.class));
+		customer.setVolumeRepository((VolumeRepository) RepositoryContextHolder.repository(Volume.class));
 		
 		customer.setSerial(serial);
-		customer.setRecommend(recommend);
+//		customer.recommend(recommend);
 		
-		for (Contact contact : contacts) {
-			customer.addContact(contact);
+		for (Category category : categories) {
+			customer.addCategory(category);
 		}
+		
 		return customer;
 	}
 }

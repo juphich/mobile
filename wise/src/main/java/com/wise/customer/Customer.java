@@ -30,7 +30,7 @@ public class Customer {
 	
 	private Customer recommend;
 	
-	private Set<Category> categories;
+	private Set<Category> categories = new HashSet<>();
 	
 	private Map<PrivacyType, List<? extends Privacy>> privacies;
 	
@@ -74,7 +74,11 @@ public class Customer {
 	
 	@SuppressWarnings("unchecked")
 	public <D extends Privacy> List<D> findPrivacy(PrivacyType type) {
-		return (List<D>) privacies.get(type);
+		if (privacies != null && !privacies.isEmpty()) {
+			return (List<D>) privacies.get(type);
+		} else {
+			return null;
+		}
 	}
 	
 	public List<Note> getMemo() {
@@ -86,7 +90,7 @@ public class Customer {
 	public Customer getRecommend() {
 		return recommend;
 	}
-
+	
 	public void setSerial(String serial) {
 		this.serial = serial;
 	}
@@ -129,6 +133,10 @@ public class Customer {
 	}
 	
 	public void recommend(Customer customer) {
+		if (customer == null) {
+			return;
+		}
+		
 		Volume volume = volumeRepository.find(customer.getCustomerId());
 		if (volume == null) {
 			volume = new Volume(customer);

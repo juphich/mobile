@@ -36,4 +36,9 @@ public class MockNoteRepository implements NoteRepository {
 		list.add(note);
 		notes.put(note.getReferer(), list);
 	}
+
+	@Override
+	public void remove(Note domain) {
+		
+	}
 }

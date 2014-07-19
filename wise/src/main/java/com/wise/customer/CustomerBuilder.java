@@ -10,6 +10,7 @@ import com.wise.core.RepositoryContextHolder;
 import com.wise.core.SequenceGenerator;
 import com.wise.customer.code.Phone;
 import com.wise.customer.privacy.Contact;
+import com.wise.customer.privacy.Privacy;
 import com.wise.note.Note;
 import com.wise.note.NoteRepository;
 import com.wise.volume.Volume;
@@ -19,18 +20,32 @@ public class CustomerBuilder {
 
 	private String serial;
 	private String name;
-	private Gender gender;
+	private Gender gender = Gender.UNKNOWN;
 	private Customer recommend;
 	
 	private Set<Category> categories = new HashSet<>();
-	private List<Contact> contacts = new ArrayList<Contact>(10);
+	private List<Privacy> privacies = new ArrayList<Privacy>(10);
 	
 	private String customerId;
 	
 	public static CustomerBuilder as() {
 		return new CustomerBuilder();
 	}
-
+	
+	public CustomerBuilder() {}
+	
+	public CustomerBuilder(Customer customer) {
+		if (customer != null) {
+			this.customerId = customer.getCustomerId();
+			this.serial = customer.getSerial();
+			this.name = customer.getName();
+			this.gender = customer.getGender();
+			this.recommend = customer.getRecommend();
+			
+			this.categories.addAll(customer.getCategories());
+		}
+	}
+	
 	public CustomerBuilder id(String customerId) {
 		this.customerId = customerId;
 		return this;
@@ -57,7 +72,7 @@ public class CustomerBuilder {
 	}
 	
 	public CustomerBuilder phone(String phone) {
-		this.contacts.add(new Contact(Phone.mobile, phone));
+		this.privacies.add(new Contact(Phone.mobile, phone));
 		return this;
 	}
 	
@@ -66,7 +81,39 @@ public class CustomerBuilder {
 		return this;
 	}
 	
-	public Customer build() {
+	public String getSerial() {
+		return serial;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public Customer getRecommend() {
+		return recommend;
+	}
+
+	public Set<Category> getCategories() {
+		return categories;
+	}
+
+	public List<Privacy> getPrivacies() {
+		return privacies;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public Customer build() {		
+		if (name == null || name.isEmpty()) {
+			throw new CustomerValidationException("customer name is empty");
+		}
+		
 		if (customerId == null) {
 			this.customerId = SequenceGenerator.next();
 		}
@@ -76,10 +123,14 @@ public class CustomerBuilder {
 		customer.setVolumeRepository((VolumeRepository) RepositoryContextHolder.repository(Volume.class));
 		
 		customer.setSerial(serial);
-//		customer.recommend(recommend);
+		customer.recommend(recommend);
 		
 		for (Category category : categories) {
 			customer.addCategory(category);
+		}
+		
+		for (Privacy privacy : privacies) {
+			customer.addPrivacy(privacy);
 		}
 		
 		return customer;

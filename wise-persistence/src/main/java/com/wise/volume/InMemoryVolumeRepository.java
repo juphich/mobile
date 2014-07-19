@@ -1,5 +1,6 @@
 package com.wise.volume;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,16 @@ public class InMemoryVolumeRepository implements VolumeRepository {
 
 	@Override
 	public List<Volume> search(Query query) {
-		return null;
+		return new ArrayList<>(volumeMap.values());
 	}
 
 	@Override
 	public void save(Volume volume) {
-		volumeMap.put(volume.getMaster().getCustomerId(), volume);
+		volumeMap.put(volume.getMaster(), volume);
+	}
+
+	@Override
+	public void remove(Volume volume) {
+		volumeMap.remove(volume);
 	}
 }

@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.wise.category.Category;
+import com.wise.category.CategoryType;
 import com.wise.core.GenericQuery;
 import com.wise.core.Query;
 import com.wise.core.RepositoryContextHolder;
@@ -105,7 +106,7 @@ public class CustomerDomainTest {
 		
 		// 엘사의 볼륨 정보
 		Volume volume = RepositoryContextHolder.repository(Volume.class).find(elsa.getCustomerId());
-		assertThat(volume.getMaster(), is(elsa));
+		assertThat(volume.getMaster(), is(elsa.getCustomerId()));
 		assertThat(volume.getSize(), is(2));
 	}
 	
@@ -113,16 +114,16 @@ public class CustomerDomainTest {
 	public void test_회원_분류_등록() {
 		Customer elsa = new CustomerBuilder().name("엘사").gender(Gender.FEMALE).build();
 		
-		elsa.addCategory(new Category("partner", "파트너"));
-		elsa.addCategory(new Category("friend", "친구"));
+		elsa.addCategory(new Category("partner", "파트너", CategoryType.customer));
+		elsa.addCategory(new Category("friend", "친구", CategoryType.customer));
 		
 		assertThat(elsa.getCategories().size(), is(2));
 	}
 	
 	@Test
 	public void test_회원_분류별_조회() {
-		Category partner = new Category("partner", "파트너");
-		Category friend = new Category("friend", "친구");
+		Category partner = new Category("partner", "파트너", CategoryType.customer);
+		Category friend = new Category("friend", "친구", CategoryType.customer);
 		
 		RepositoryContextHolder.repository(Customer.class).save(
 				new CustomerBuilder().name("엘사").category(friend).build()

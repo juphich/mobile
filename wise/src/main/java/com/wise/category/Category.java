@@ -3,14 +3,16 @@ package com.wise.category;
 public class Category {
 	private String id;
 	private String name;
+	private CategoryType type;
 	
-	public Category(String id, String name) {
+	public Category(String id, String name, CategoryType type) {
 		this.id = id;
 		this.name = name;
+		this.type = type;
 	}
 	
 	public CategoryType getType() {
-		return CategoryType.customer;
+		return type;
 	}
 
 	public String getId() {
@@ -19,6 +21,10 @@ public class Category {
 
 	public String getName() {
 		return name;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	@Override
@@ -44,5 +50,10 @@ public class Category {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 }

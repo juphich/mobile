@@ -40,4 +40,9 @@ public class MockCustomerRepository implements CustomerRepository {
 	public void save(Customer customer) {
 		customers.put(customer.getCustomerId(), customer);
 	}
+
+	@Override
+	public void remove(Customer domain) {
+		
+	}
 }

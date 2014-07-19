@@ -9,4 +9,6 @@ public interface Repository<D> {
 	List<D> search(Query query);
 	
 	void save(D domain);
+	
+	void remove(D domain);
 }

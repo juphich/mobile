@@ -9,14 +9,15 @@ public class Volume {
 
 	private Customer master;
 	private List<Customer> members;
+	
 	private int size;
 	
 	public Volume(Customer member) {
 		this.master = member;
 	}
 
-	public Customer getMaster() {
-		return master;
+	public String getMaster() {
+		return master.getCustomerId();
 	}
 
 	public int getSize() {
@@ -31,7 +32,6 @@ public class Volume {
 		if (members == null) {
 			members = new ArrayList<>();
 		}
-		
 		members.add(member);
 		size += 1;
 	}

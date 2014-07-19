@@ -36,7 +36,7 @@ public class VolumeDomainTest {
 		volume.addMamber(members.get(2));
 		volume.addMamber(members.get(3));
 		
-		assertThat(volume.getMaster(), is(master));
+		assertThat(volume.getMaster(), is(master.getCustomerId()));
 		assertThat(volume.getSize(), is(4));
 	}
 }

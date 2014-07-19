@@ -21,4 +21,8 @@ public enum Phone implements ContactKind {
 		return PrivacyType.phone;
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
 }

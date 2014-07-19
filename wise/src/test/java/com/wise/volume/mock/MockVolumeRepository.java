@@ -24,6 +24,11 @@ public class MockVolumeRepository implements VolumeRepository {
 
 	@Override
 	public void save(Volume volume) {
-		volumeMap.put(volume.getMaster().getCustomerId(), volume);
+		volumeMap.put(volume.getMaster(), volume);
+	}
+
+	@Override
+	public void remove(Volume domain) {
+		
 	}
 }

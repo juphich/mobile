@@ -1,6 +1,7 @@
 package com.wise.product;
 
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.wise.category.Category;
@@ -24,6 +25,8 @@ public class Product {
 	private String description;
 	
 	private String contact;
+	
+	private Sale sale = new Sale(0,0);
 	
 	private Set<Category> categories;
 
@@ -69,6 +72,10 @@ public class Product {
 
 	public String getContact() {
 		return contact;
+	}
+
+	public Sale getSale() {
+		return sale;
 	}
 
 	public Set<Category> getCategories() {
@@ -117,5 +124,16 @@ public class Product {
 
 	public void setContact(String contact) {
 		this.contact = contact;
+	}
+	
+	public void setSale(Sale sale) {
+		this.sale = sale;
+	}
+
+	public void addCategory(Category category) {
+		if (categories == null) {
+			categories = new HashSet<>();
+		}
+		categories.add(category);
 	}
 }

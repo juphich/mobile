@@ -1,6 +1,7 @@
 package com.wise.product;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,8 @@ public class ProductBuilder {
 	private String origin;
 	private String maker;
 	private String seller;
+	
+	private Sale sale = new Sale(0,0);
 
 	private String description;
 	
@@ -87,6 +90,23 @@ public class ProductBuilder {
 		return this;
 	}
 	
+	public ProductBuilder sale(Sale sale) {
+		this.sale = sale;
+		return this;
+	}
+	
+	public ProductBuilder categories(Collection<Category> c) {
+		if (c == null || c.isEmpty()) {
+			return this;
+		}
+		
+		if (categories == null) {
+			categories = new HashSet<>();
+		}
+		categories.addAll(c);
+		
+		return this;
+	}
 	public ProductBuilder category(Category category) {
 		if (categories == null) {
 			categories = new HashSet<>();
@@ -98,6 +118,7 @@ public class ProductBuilder {
 	
 	public Product build() {
 		Product product = new Product();
+		product.setId(productId);
 		product.setName(name);
 		product.setSerial(serial);
 		product.setPrice(price);
@@ -107,6 +128,13 @@ public class ProductBuilder {
 		product.setSeller(seller);
 		product.setDescription(description);
 		product.setContact(contact);
+		product.setSale(sale);
+		
+		if (categories != null) {
+			for (Category category : categories) {
+				product.addCategory(category);
+			}
+		}
 		
 		return product; 
 	}

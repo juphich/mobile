@@ -1,5 +1,6 @@
 package net.entity.android;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -16,12 +17,29 @@ public class EntityMetadata {
 	public Map<String, Attribute> getAttributes() {
 		return attributes;
 	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void addAttribute(String name, Class<?> type) {
+		if (attributes == null) {
+			attributes = new HashMap<>();
+		}
+		
+		attributes.put(name, new Attribute(name, type));
+	}
 
-	public class Attribute {
+	public static class Attribute {
 		private String name;
 		private Class<?> type;
 		private String key;
 		
+		Attribute(String name, Class<?> type) {
+			this.name = name;
+			this.type = type;
+		}
+
 		public String getName() {
 			return name;
 		}

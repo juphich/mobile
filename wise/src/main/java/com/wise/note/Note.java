@@ -2,6 +2,7 @@ package com.wise.note;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -11,8 +12,10 @@ public class Note {
 	@Id
 	private String noteId;
 	
+	@Column
 	private Date writeTime;
 	
+	@Column
 	private String note;
 	
 	private Object referer;

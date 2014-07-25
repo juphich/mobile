@@ -15,7 +15,7 @@ public class SQLiteNoteRepository extends SQLiteSupport implements NoteRepositor
 
 	@Override
 	protected void init() {
-		System.out.println("crate note table.");
+		System.out.println("create note table.");
 		
 		StringBuilder note = new StringBuilder();
 		note.append("CREATE TABLE IF NOT EXISTS note (")
